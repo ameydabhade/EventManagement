@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -21,19 +22,19 @@ const Header = () => {
         </a>
 
         <nav className="hidden md:flex space-x-2">
-          <a
-            href="/login"
+          <Link
+            to="/login"
             className="text-white py-2 px-6 rounded-lg border-2 border-transparent hover:text-[#7a56d6] hover:border-[#7a56d6] transition-colors duration-300"
           >
             Login
-          </a>
+           </Link>
 
-          <a
-            href="/login"
+          <Link
+            to="/signup"
             className="text-white py-2 px-6 rounded-lg border-2 border-transparent hover:text-[#7a56d6] hover:border-[#7a56d6] transition-colors duration-300"
           >
             Sign Up
-          </a>
+          </Link>
         </nav>
 
         {/* Mobile Menu Button */}

@@ -1,5 +1,6 @@
 import React from "react";
 import { CalendarDays, MapPin } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const featuredEvents = [
   {
@@ -36,9 +37,9 @@ export default function Home() {
           </p>
         </section>
         <div className="justify-center flex">
-            <button className="text-white font-2xl p-4 bg-[#7a56d6] m-8 hover:scale-105 transition rounded-lg">
+            <Link to="explore" className="text-white font-2xl p-4 bg-[#7a56d6] m-8 hover:scale-105 transition rounded-lg">
                 Explore Now!!
-            </button>
+            </Link>
         </div>
 
         <section>
@@ -49,7 +50,7 @@ export default function Home() {
             {featuredEvents.map((event) => (
               <div
                 key={event.id}
-                  className="text-white py-2 px-6 rounded-lg border-2 hover:scale-105 transition border-transparent hover:text-[#7a56d6] hover:border-[#7a56d6] transition-colors duration-300"
+                  className="text-white py-2 px-6 rounded-lg border-2 hover:scale-105 transition border-transparent hover:text-[#7a56d6] hover:border-[#7a56d6]  duration-300"
               >
                 <img
                   src={event.image || "/placeholder.png"}
