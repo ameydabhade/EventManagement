@@ -1,56 +1,47 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+// App.jsx
+import { createBrowserRouter, Outlet } from 'react-router-dom';
+import Header from './components/Header.jsx';
+import Home from './components/Home.jsx';
+import SigninPage from './components/SigninPage.jsx';
+import SignupPage from './components/SignupPage.jsx';
+import Explore from './components/Explore.jsx';
 
-import Header from './components/Header'
-import SignupPage from './components/SignupPage'
-import SigninPage from './components/SigninPage'
-import Home from './components/Home'
-
-
-
-function App() {
-  const [count, setCount] = useState(0)
-
+// Layout Component (with Header and Outlet)
+function Layout() {
   return (
-    <>
-
-    <Header/>
-      <Home/>
-      </>
-  )
+    <div>
+      <Header />
+      <main>
+        <Outlet />  {/* This will render the route-specific content */}
+      </main>
+    </div>
+  );
 }
 
-export default App
+// Router Configuration
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Layout />,  // Use Layout as a wrapper for all routes
+    children: [
+      {
+        path: '/',
+        element: <Home />
+      },
+      {
+        path: 'login',
+        element: <SigninPage />
+      },
+      {
+        path: 'signup',
+        element: <SignupPage />
+      },
+      {
+        path: 'explore',
+        element: <Explore />
+      }
+    ]
+  }
+]);
 
-
-// import { useState } from 'react';
-// import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-// import Header from './components/Header';
-// import Home from './components/Home';
-// import SignUp from './components/SignUp'
-
-// function App() {
-//   const [count, setCount] = useState(0);
-
-//   // Correct Router setup
-//   const router = createBrowserRouter([
-//     {
-//       path: '/',
-//       element: <Home />,
-//     },
-//     {
-//       path: '/sign',
-//       element: <SignUp />,
-//     },
-//   ]);
-
-//   return (
-//     <div className="bg-black">
-//       <Header />
-//       <RouterProvider router={router} />
-//     </div>
-//   );
-// }
-
-// export default App;
+export default router;
