@@ -147,7 +147,7 @@ function Explore() {
       
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 m-8">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 m-6">
         {Events.map((event) => (
           <div
             key={event.id}

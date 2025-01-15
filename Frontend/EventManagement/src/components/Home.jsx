@@ -8,27 +8,34 @@ const featuredEvents = [
     title: "Tech Conference 2025",
     date: "Aug 15-17, 2025",
     location: "San Francisco",
-    image: "/SanFrancisco.png",
+    image: "https://res.cloudinary.com/dr363meyv/image/upload/v1736882906/Cities/SanFrancisco.webp",
   },
   {
     id: 2,
     title: "Music Festival",
     date: "Sep 22-24, 2025",
     location: "Austin",
-    image: "/Austin.png",
+    image: "https://res.cloudinary.com/dr363meyv/image/upload/v1736882991/Cities/Austin.jpg",
   },
   {
     id: 3,
     title: "Food & Wine Expo",
     date: "Oct 5-7, 2025",
     location: "New York",
-    image: "/NewYork.png",
+    image: "https://res.cloudinary.com/dr363meyv/image/upload/v1736882906/Cities/NewYork.webp",
+  },
+  {
+    id: 4,
+    title: "Vienna Cultural Summit",
+    date: "Nov 1-3, 2025",
+    location: "Vienna",
+    image: "https://res.cloudinary.com/dr363meyv/image/upload/v1736882905/Cities/Vienna.webp",
   },
 ];
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className=" bg-black text-white">
       <main className="container mx-auto px-4 py-16">
         <section className="text-center mb-2">
           <h2 className="text-5xl font-bold mb-4">Discover Amazing Events</h2>
@@ -46,7 +53,7 @@ export default function Home() {
           <h3 className="text-3xl font-semibold mb-6 text-center">
             Featured Events
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 ">
             {featuredEvents.map((event) => (
               <div
                 key={event.id}
