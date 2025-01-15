@@ -1,5 +1,4 @@
 import React from "react";
-import { CalendarDays, MapPin } from "lucide-react";
 
 function Explore() {
     const Events = [
@@ -147,28 +146,56 @@ function Explore() {
       
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 m-6">
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 m-6">
         {Events.map((event) => (
-          <div
-            key={event.id}
-            className="text-white py-2 px-6 rounded-lg border-2 hover:scale-105 transition border-transparent hover:text-[#7a56d6] hover:border-[#7a56d6]  duration-300"
-          >
-            <img
-              src={event.image || "/placeholder.png"}
-              alt={event.title}
-              className="w-full h-48 object-cover rounded-md mb-4"
-            />
-            <h4 className="text-xl font-semibold mb-2">{event.title}</h4>
-            <p className="flex items-center mb-2">
-              <CalendarDays className="mr-2 h-4 w-4" /> {event.date}
-            </p>
-            <p className="flex items-center">
-              <MapPin className="mr-2 h-4 w-4" /> {event.location}
-            </p>
-          </div>
+            <div
+                key={event.id}
+                className="text-white py-2 px-6 rounded-lg border-2 hover:scale-105 transition border-transparent hover:text-[#7a56d6] hover:border-[#7a56d6] duration-300"
+            >
+                <img
+                    src={event.image || "/placeholder.png"}
+                    alt={event.title}
+                    className="w-full h-48 object-cover rounded-md mb-4"
+                />
+                <h4 className="text-xl font-semibold mb-2">{event.title}</h4>
+                <p className="flex items-center mb-2">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4 mr-2"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M8 7V3m8 4V3m-6 18h4M5 11h14M5 19h14M3 7h18"
+                        />
+                    </svg>
+                    {event.date}
+                </p>
+                <p className="flex items-center">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4 mr-2"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M17 20h5v-1a8.004 8.004 0 00-15.446-2M17 20V4a2 2 0 00-2-2h-2a2 2 0 00-2 2v4m0 12v-4a2 2 0 012-2h2a2 2 0 012 2v4m-4-6a4 4 0 110-8 4 4 0 010 8z"
+                        />
+                    </svg>
+                    {event.location}
+                </p>
+            </div>
         ))}
-      </div>
-    </>
+    </div>
+</>
   );
 }
 export default Explore;
