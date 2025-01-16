@@ -1,10 +1,24 @@
-import express from 'express'
-import jwt from 'jsonwebtoken'
-import mongoose from 'mongoose'
+import express from 'express';
+import mongoose from 'mongoose';
+import { Routes } from './Routes/Routes.js';
 
+const app = express();
+app.use(express.json());
 
-const app = new express();
+app.listen(5800, () => {
+    console.log('Server is up at port 5800');
+});
 
-app.listen(5800,(req,res)=>{
-    console.log("Server is Up at 5800")
-})
+mongoose.connect("mongodb://localhost:27017");
+
+const db = mongoose.connection;
+
+db.on('open', () => {
+    console.log('MongoDB connection is successful');
+});
+
+db.on('error', (err) => {
+    console.error('MongoDB connection error:', err);
+});
+
+Routes(app);
