@@ -5,6 +5,7 @@ import Home from './components/Home.jsx';
 import SigninPage from './components/SigninPage.jsx';
 import SignupPage from './components/SignupPage.jsx';
 import Explore from './components/Explore.jsx';
+import Dashboard from './components/Dashboard.jsx';
 
 // Layout Component (with Header and Outlet)
 function Layout() {
@@ -13,6 +14,7 @@ function Layout() {
       <Header />
       <main>
         <Outlet />  {/* This will render the route-specific content */}
+      
       </main>
     </div>
   );
@@ -33,12 +35,16 @@ const router = createBrowserRouter([
         element: <SigninPage />
       },
       {
-        path: 'signup',
+        path: 'register',
         element: <SignupPage />
       },
       {
         path: 'explore',
         element: <Explore />
+      },
+      {
+        path: 'dashboard',
+        element: <Dashboard />
       }
     ]
   }

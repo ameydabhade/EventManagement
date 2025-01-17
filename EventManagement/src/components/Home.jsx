@@ -41,7 +41,7 @@ export default function Home() {
           <p className="text-xl mb-2">Find and attend events that match your passions</p>
         </section>
         <div className="justify-center flex">
-          <Link to="explore" className="text-white text-2xl p-4 bg-[#7a56d6] m-8 hover:scale-105 transition rounded-lg">
+          <Link to="login" className="text-white text-2xl p-4 bg-[#7a56d6] m-8 hover:scale-105 transition rounded-lg">
             Explore Now!!
           </Link>
         </div>
