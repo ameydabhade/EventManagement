@@ -7,6 +7,7 @@ export default function SignupPage() {
     Email: '',
     Password: '',
     confirmPassword: '',
+    role:'user',
   });
 
   const [message, setMessage] = useState('');
