@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 const Header = () => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userName, setUserName] = useState(""); // State to store the user's name
+  const [userRole, setUserRole] = useState(""); // State to store the user's role
   const navigate = useNavigate(); // For redirecting after logout
 
   const toggleMobileMenu = () => {
@@ -16,6 +17,7 @@ const Header = () => {
     if (userData) {
       const user = JSON.parse(userData);
       setUserName(user.Name); // Set user's name from localStorage
+      setUserRole(user.role); // Set user's role from localStorage
     }
   }, []);
 
@@ -23,6 +25,7 @@ const Header = () => {
   const handleLogout = () => {
     localStorage.removeItem('user');
     setUserName(""); // Clear the user's name from the state
+    setUserRole(""); // Clear the user's role from the state
     navigate("/login"); // Redirect to login page
   };
 
@@ -40,11 +43,18 @@ const Header = () => {
         {/* Desktop Menu */}
         <nav className="hidden md:flex space-x-2">
           {userName ? (
-            // If logged in, show "Welcome, {userName}" and Logout
             <>
               <span className="text-white py-2 px-6 rounded-lg border-2 border-transparent hover:text-[#7a56d6] hover:border-[#7a56d6] transition-colors duration-300">
                 Welcome, {userName}!
               </span>
+              {userRole === "admin" && (
+                <Link
+                  to="/addevent"
+                  className="text-white py-2 px-6 rounded-lg border-2 border-transparent hover:text-[#7a56d6] hover:border-[#7a56d6] transition-colors duration-300"
+                >
+                  Add Event
+                </Link>
+              )}
               <button
                 onClick={handleLogout}
                 className="text-white py-2 px-6 rounded-lg border-2 border-transparent hover:text-[#7a56d6] hover:border-[#7a56d6] transition-colors duration-300"
@@ -53,7 +63,6 @@ const Header = () => {
               </button>
             </>
           ) : (
-            // If not logged in, show Login and Sign Up buttons
             <>
               <Link
                 to="/login"
@@ -102,6 +111,14 @@ const Header = () => {
                   <span className="block text-black py-2 px-6 rounded-lg text-center">
                     Welcome, {userName}!
                   </span>
+                  {userRole === "admin" && (
+                    <Link
+                      to="/add-event"
+                      className="block bg-blue-600 text-white py-2 px-6 rounded-lg text-center hover:bg-blue-700"
+                    >
+                      Add Event
+                    </Link>
+                  )}
                   <button
                     onClick={handleLogout}
                     className="block bg-red-500 text-white py-2 px-6 rounded-lg text-center hover:bg-red-600"

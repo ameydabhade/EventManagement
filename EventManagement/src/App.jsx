@@ -6,6 +6,7 @@ import SignupPage from './components/SignupPage.jsx';
 import Explore from './components/Explore.jsx';
 import Dashboard from './components/Dashboard.jsx';
 import EventPage from './components/EventPage.jsx'; // Import your EventPage component
+import AddEvent from './components/AddEvent.jsx';
 
 // Layout Component (with Header and Outlet)
 function Layout() {
@@ -48,6 +49,10 @@ const router = createBrowserRouter([
       {
         path: 'events/:id',  // Dynamic route for the event details page
         element: <EventPage />  // Render the EventPage component
+      },
+      {
+        path: 'addevent',  // Dynamic route for the event details page
+        element: <AddEvent />  // Render the EventPage component
       }
     ]
   }
