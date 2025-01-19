@@ -46,7 +46,8 @@ export default function SignupPage() {
     setIsLoading(true);
     setMessage('');
 
-    fetch('http://localhost:5800/register', {
+    // Updated to use the live API URL
+    fetch('https://eventmanagement-5c1x.onrender.com/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
