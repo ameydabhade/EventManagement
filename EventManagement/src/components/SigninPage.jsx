@@ -27,7 +27,7 @@ export default function SigninPage() {
     setSuccessMessage('');
 
     try {
-      const response = await fetch('http://localhost:5800/login', {
+      const response = await fetch('https://eventmanagement-5c1x.onrender.com/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -37,19 +37,23 @@ export default function SigninPage() {
 
       const data = await response.json();
 
-      if (response.ok && data.message === 'Authentication successful') {
-        // Save user data and token to localStorage
-        localStorage.setItem('user', JSON.stringify(data.user)); // Save user info
-        localStorage.setItem('token', data.token); // Save authentication token
+      if (response.ok) {
+        if (data.message === 'Authentication successful') {
+          // Save user data and token to localStorage
+          localStorage.setItem('user', JSON.stringify(data.user)); // Save user info
+          localStorage.setItem('token', data.token); // Save authentication token
 
-        setSuccessMessage('Login Successful!');
-        setIsLoggedIn(true); // Set login state to true
+          setSuccessMessage('Login Successful!');
+          setIsLoggedIn(true); // Set login state to true
 
-        // Refresh the page and redirect to /explore
-        window.location.reload();  // Refresh page to update state
-        window.location.href = '/explore';  // Redirect to explore page
+          // Redirect to /explore and reload the page
+          navigate('/explore');
+          window.location.reload(); // This will reload the page after navigating
+        } else {
+          setError(data.message || 'Invalid credentials');
+        }
       } else {
-        setError(data.message || 'Invalid credentials');
+        setError(data.message || 'Failed to log in. Please check your credentials.');
       }
     } catch (err) {
       setError('Error logging in. Please try again later.');
@@ -68,9 +72,9 @@ export default function SigninPage() {
     localStorage.setItem('user', JSON.stringify({ Name: 'Guest', Email: 'guest@example.com', role: 'guest' }));
     localStorage.setItem('token', 'guest-token'); // Placeholder token for guest
 
-    // Refresh the page and redirect to /explore
-    window.location.reload();  // Refresh page to update state
-    window.location.href = '/explore';  // Redirect to explore page
+    // Redirect to /explore and reload the page
+    navigate('/explore');
+    window.location.reload(); // This will reload the page after navigating
   };
 
   const handleLogout = () => {

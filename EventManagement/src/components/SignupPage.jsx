@@ -1,49 +1,49 @@
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function SignupPage() {
   const [formData, setFormData] = useState({
     Name: '',
     Email: '',
     Password: '',
-    confirmPassword: '' // Added confirm password field
-  })
+    confirmPassword: '',
+  });
 
-  const [message, setMessage] = useState('')
-  const [isLoading, setIsLoading] = useState(false) // Loading state to disable button
-  const navigate = useNavigate()
+  const [message, setMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value 
-    })
-  }
+      [e.target.name]: e.target.value,
+    });
+  };
 
   const handleSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     // Check if passwords match
     if (formData.Password !== formData.confirmPassword) {
-      setMessage('Passwords do not match.')
-      return
+      setMessage('Passwords do not match.');
+      return;
     }
 
-    // Basic email format validation
-    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
+    // Basic email format validation (updated regex)
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailPattern.test(formData.Email)) {
-      setMessage('Please enter a valid email address.')
-      return
+      setMessage('Please enter a valid email address.');
+      return;
     }
 
     // Basic password length validation
     if (formData.Password.length < 8) {
-      setMessage('Password must be at least 8 characters long.')
-      return
+      setMessage('Password must be at least 8 characters long.');
+      return;
     }
 
-    setIsLoading(true)
-    setMessage('')
+    setIsLoading(true);
+    setMessage('');
 
     fetch('http://localhost:5800/register', {
       method: 'POST',
@@ -53,28 +53,28 @@ export default function SignupPage() {
       body: JSON.stringify({
         Name: formData.Name,
         Email: formData.Email,
-        Password: formData.Password
-      })
+        Password: formData.Password,
+      }),
     })
-      .then(response => {
+      .then((response) => {
         if (!response.ok) {
-          throw new Error('Registration failed'); // Catch failed responses
+          throw new Error('Registration failed');
         }
         return response.json();
       })
-      .then(data => {
-        setMessage('Registration successful! Please log in.')
+      .then(() => {
+        setMessage('Registration successful! Please log in.');
         setTimeout(() => {
-          navigate('/login') // Redirect to login after successful registration
-        }, 2000)
+          navigate('/login'); // Redirect to login after successful registration
+        }, 2000);
       })
-      .catch(error => {
-        setMessage('Registration failed. Please try again.')
+      .catch(() => {
+        setMessage('Registration failed. Please try again.');
       })
       .finally(() => {
-        setIsLoading(false)
-      })
-  }
+        setIsLoading(false);
+      });
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-black">
@@ -142,7 +142,7 @@ export default function SignupPage() {
             <button
               type="submit"
               className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#7a56d6] hover:bg-[#7a56d6] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#fa4d56] transition duration-150 ease-in-out"
-              disabled={isLoading} // Disable the button while loading
+              disabled={isLoading}
             >
               {isLoading ? 'Signing up...' : 'Sign up'}
             </button>
@@ -150,7 +150,11 @@ export default function SignupPage() {
         </form>
 
         {message && (
-          <div className="mt-4 text-center text-sm font-medium text-green-500">
+          <div
+            className={`mt-4 text-center text-sm font-medium ${
+              message.includes('successful') ? 'text-green-500' : 'text-red-500'
+            }`}
+          >
             {message}
           </div>
         )}
@@ -158,12 +162,15 @@ export default function SignupPage() {
         <div className="text-center">
           <p className="text-sm text-gray-400">
             Already have an account?{' '}
-            <Link to="../login" className="font-medium text-[#7a56d6] hover:text-[#fa4d56] transition duration-150 ease-in-out">
+            <Link
+              to="/login"
+              className="font-medium text-[#7a56d6] hover:text-[#fa4d56] transition duration-150 ease-in-out"
+            >
               Login
             </Link>
           </p>
         </div>
       </div>
     </div>
-  )
+  );
 }

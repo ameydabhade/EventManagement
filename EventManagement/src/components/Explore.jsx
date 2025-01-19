@@ -3,17 +3,44 @@ import { Link } from "react-router-dom"; // Import Link from react-router-dom
 
 function Explore() {
   const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true); // Loading state to show while fetching data
+  const [error, setError] = useState(null); // Error state to store error message
 
   // Fetch events from the API
   useEffect(() => {
     async function fetchEvents() {
-      const response = await fetch("http://localhost:5800/events");
-      const data = await response.json();
-      setEvents(data);
+      try {
+        const response = await fetch("https://eventmanagement-5c1x.onrender.com/events");
+        
+        if (!response.ok) {
+          throw new Error("Failed to fetch events");
+        }
+
+        const data = await response.json();
+        setEvents(data);
+      } catch (err) {
+        setError(err.message); // Set error message if something goes wrong
+      } finally {
+        setLoading(false); // Set loading to false after data is fetched or error occurs
+      }
     }
 
     fetchEvents();
   }, []);
+
+  // Show loading or error message if needed
+  if (loading) {
+    return <div className="text-center text-white">Loading events...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center text-white">Error fetching events: {error}</div>;
+  }
+
+  // If no events are found
+  if (events.length === 0) {
+    return <div className="text-center text-white">No events available.</div>;
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-6 m-6">

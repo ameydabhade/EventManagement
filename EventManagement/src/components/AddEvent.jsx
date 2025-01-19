@@ -8,34 +8,40 @@ export default function AddEvent() {
   const [image, setImage] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate(); // Initialize navigate
-  const [role, setRole] = useState(""); // State to store user's role
 
-  // Get role from localStorage when the component mounts
+  // Get role from localStorage when the component mounts (although we won't use it in the request)
   useEffect(() => {
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      const user = JSON.parse(userData);
-      setRole(user.role); // Set user's role from localStorage
+    const userData = localStorage.getItem("user");
+    if (!userData) {
+      navigate("/login"); // Redirect to login if no user data exists
     }
-  }, []);
+  }, [navigate]);
 
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Simple validation
-    if (!title || !date || !location || !image) {
+    if (!title.trim() || !date || !location.trim() || !image.trim()) {
       setError("All fields are required");
       return;
     }
 
+    const userData = JSON.parse(localStorage.getItem("user")); // Parse user data from localStorage
+    const role = userData?.role; // Assuming role exists in userData
+
+    if (!role) {
+      setError("User role is missing");
+      return;
+    }
+
     try {
-      const response = await fetch("http://localhost:5800/events", {
+      const response = await fetch("https://eventmanagement-5c1x.onrender.com/events", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ title, date, location, image, role }), // Include role in the request body
+        body: JSON.stringify({ title, date, location, image, role }), // Include role from userData
       });
 
       const result = await response.json();

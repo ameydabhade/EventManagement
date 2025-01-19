@@ -6,6 +6,7 @@ export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [events, setEvents] = useState([]); // State for events
   const [loading, setLoading] = useState(true); // Loading state
+  const [error, setError] = useState(null); // State to store error message
 
   // Check login status on component mount
   useEffect(() => {
@@ -19,17 +20,17 @@ export default function Home() {
   useEffect(() => {
     async function fetchEvents() {
       try {
-        const response = await fetch("http://localhost:5800/events"); // Adjust to your backend API URL
-        if (response.ok) {
-          const data = await response.json();
-          setEvents(data);
-        } else {
-          console.error("Error fetching events:", response.statusText);
+        const response = await fetch("https://eventmanagement-5c1x.onrender.com/events"); // Adjust to your backend API URL
+        if (!response.ok) {
+          throw new Error(`Error: ${response.statusText}`);
         }
+        const data = await response.json();
+        setEvents(data); // Set events from the API response
       } catch (error) {
         console.error("Error fetching events:", error);
+        setError(error.message); // Set error message in state
       } finally {
-        setLoading(false); // Set loading to false once data is fetched
+        setLoading(false); // Set loading to false once data is fetched or error occurs
       }
     }
 
@@ -52,6 +53,10 @@ export default function Home() {
 
   if (loading) {
     return <div className="text-center text-white">Loading...</div>; // Show loading state while fetching data
+  }
+
+  if (error) {
+    return <div className="text-center text-white">Error fetching events: {error}</div>; // Show error message if an error occurred
   }
 
   // Only show the first 4 events
