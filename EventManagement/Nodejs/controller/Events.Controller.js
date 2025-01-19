@@ -2,23 +2,19 @@ import EventModel from '../Model/Events.model.js';
 import { validationResult } from 'express-validator';
 import mongoose from 'mongoose';
 
-// Create Event Function
 export async function createEvent(req, res) {
-    const { title, date, location, image, role } = req.body; // Extract role from the request body
+    const { title, date, location, image, role } = req.body;
 
-    // Check if the user is an admin
-    if (role !== 'admin') { // Compare with 'admin' role from the request
+    if (role !== 'admin') {
         return res.status(403).json({ message: 'Forbidden: You do not have permission to create events.' });
     }
 
-    // Validate input
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ message: 'Invalid input', errors: errors.array() });
     }
 
     try {
-        // Create a new event
         const newEvent = new EventModel({
             title,
             date,
@@ -26,21 +22,19 @@ export async function createEvent(req, res) {
             image,
         });
 
-        // Save the new event to the database
         const savedEvent = await newEvent.save();
 
         if (!savedEvent) {
             return res.status(400).json({ message: 'Something went wrong while saving event' });
         }
 
-        res.status(201).json(savedEvent); // Return the saved event
+        res.status(201).json(savedEvent);
     } catch (err) {
         console.error('Error saving event:', err);
         res.status(500).json({ message: 'Error saving event', error: err.message });
     }
 }
 
-// Fetch All Events
 export async function fetchEvents(req, res) {
     try {
         const events = await EventModel.find();
@@ -55,11 +49,9 @@ export async function fetchEvents(req, res) {
     }
 }
 
-// Fetch Single Event by ID
 export async function fetchEventById(req, res) {
     const { id } = req.params;
 
-    // Validate the id to ensure it's a valid ObjectId
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).json({ message: 'Invalid Event ID' });
     }
@@ -77,23 +69,19 @@ export async function fetchEventById(req, res) {
     }
 }
 
-// Update Event
 export async function updateEvent(req, res) {
     const { id } = req.params;
-    const { title, date, location, image, role } = req.body; // Extract role from the request body
+    const { title, date, location, image, role } = req.body;
 
-    // Check if the user is an admin
-    if (role !== 'admin') { // Compare with 'admin' role from the request
+    if (role !== 'admin') {
         return res.status(403).json({ message: 'Forbidden: You do not have permission to update events.' });
     }
 
-    // Validate the id to ensure it's a valid ObjectId
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).json({ message: 'Invalid Event ID' });
     }
 
     try {
-        // Update the event by ID
         const updatedEvent = await EventModel.findByIdAndUpdate(
             id,
             { title, date, location, image },
@@ -111,23 +99,19 @@ export async function updateEvent(req, res) {
     }
 }
 
-// Delete Event
 export async function deleteEvent(req, res) {
     const { id } = req.params;
-    const { role } = req.body; // Extract role from the request body
+    const { role } = req.body;
 
-    // Check if the user is an admin
-    if (role !== 'admin') { // Compare with 'admin' role from the request
+    if (role !== 'admin') {
         return res.status(403).json({ message: 'Forbidden: You do not have permission to delete events.' });
     }
 
-    // Validate the id to ensure it's a valid ObjectId
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).json({ message: 'Invalid Event ID' });
     }
 
     try {
-        // Delete the event by ID
         const deletedEvent = await EventModel.findByIdAndDelete(id);
 
         if (!deletedEvent) {

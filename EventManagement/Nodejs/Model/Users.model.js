@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 
-// User Schema
 const userSchema = new mongoose.Schema({
     Name: {
         type: String,
@@ -11,7 +10,7 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true,
         match: [/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'Please fill a valid email address'],
-        lowercase: true,  // Convert email to lowercase before saving
+        lowercase: true,
     },
     Password: {
         type: String,
@@ -19,13 +18,12 @@ const userSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ['user', 'admin', 'guest'], 
-        default: 'user', 
+        enum: ['user', 'admin', 'guest'],
+        default: 'user',
     }
 }, {
-    timestamps: true,  // Automatically adds createdAt and updatedAt
+    timestamps: true,
 });
 
-// Create a user model
 const UserModel = mongoose.model('Users', userSchema);
 export default UserModel;

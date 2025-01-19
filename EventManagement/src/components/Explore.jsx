@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom"; // Import Link from react-router-dom
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Import FontAwesomeIcon component
-import { faCalendarDay, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons'; // Import specific icons
+import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCalendarDay, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
 
 function Explore() {
   const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(true); // Loading state to show while fetching data
-  const [error, setError] = useState(null); // Error state to store error message
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Fetch events from the API
   useEffect(() => {
     async function fetchEvents() {
       try {
@@ -21,16 +20,15 @@ function Explore() {
         const data = await response.json();
         setEvents(data);
       } catch (err) {
-        setError(err.message); // Set error message if something goes wrong
+        setError(err.message);
       } finally {
-        setLoading(false); // Set loading to false after data is fetched or error occurs
+        setLoading(false);
       }
     }
 
     fetchEvents();
   }, []);
 
-  // Show loading or error message if needed
   if (loading) {
     return <div className="text-center text-white">Loading events...</div>;
   }
@@ -39,20 +37,18 @@ function Explore() {
     return <div className="text-center text-white">Error fetching events: {error}</div>;
   }
 
-  // If no events are found
   if (events.length === 0) {
     return <div className="text-center text-white">No events available.</div>;
   }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-6 m-6">
-      
       {events.map((event) => (
         <div
-          key={event._id} // Use the correct key (MongoDB ID usually)
+          key={event._id}
           className="text-white py-2 px-6 rounded-lg border-2 hover:scale-105 transition border-transparent hover:text-[#7a56d6] hover:border-[#7a56d6] duration-300"
         >
-          <Link to={`/events/${event._id}`}> {/* Add Link to EventPage */}
+          <Link to={`/events/${event._id}`}>
             <img
               src={event.image || "/placeholder.png"}
               alt={event.title}
@@ -60,11 +56,11 @@ function Explore() {
             />
             <h4 className="text-xl font-semibold mb-2">{event.title}</h4>
             <p className="flex items-center mb-2">
-              <FontAwesomeIcon icon={faCalendarDay} className="mr-2" /> {/* Font Awesome Calendar Icon */}
-              {event.date} {/* Directly use the date */}
+              <FontAwesomeIcon icon={faCalendarDay} className="mr-2" />
+              {event.date}
             </p>
             <p className="flex items-center">
-              <FontAwesomeIcon icon={faMapMarkerAlt} className="mr-2" /> {/* Font Awesome Location Icon */}
+              <FontAwesomeIcon icon={faMapMarkerAlt} className="mr-2" />
               {event.location}
             </p>
           </Link>

@@ -1,45 +1,42 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Import FontAwesomeIcon
-import { faCalendarDay, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons'; // Import specific icons
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCalendarDay, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
 
 export default function Home() {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [events, setEvents] = useState([]); // State for events
-  const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null); // State to store error message
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Check login status on component mount
   useEffect(() => {
-    const token = localStorage.getItem("user"); // Assuming token is stored in localStorage
+    const token = localStorage.getItem("user");
     if (token) {
       setIsLoggedIn(true);
     }
   }, []);
 
-  // Fetch events from the backend API
   useEffect(() => {
     async function fetchEvents() {
       try {
-        const response = await fetch("https://eventmanagement-5c1x.onrender.com/events"); // Adjust to your backend API URL
+        const response = await fetch("https://eventmanagement-5c1x.onrender.com/events");
         if (!response.ok) {
           throw new Error(`Error: ${response.statusText}`);
         }
         const data = await response.json();
-        setEvents(data); // Set events from the API response
+        setEvents(data);
       } catch (error) {
         console.error("Error fetching events:", error);
-        setError(error.message); // Set error message in state
+        setError(error.message);
       } finally {
-        setLoading(false); // Set loading to false once data is fetched or error occurs
+        setLoading(false);
       }
     }
 
     fetchEvents();
   }, []);
 
-  // Redirect to the appropriate page based on login status
   const handleExploreClick = () => {
     if (isLoggedIn) {
       navigate("/explore");
@@ -48,20 +45,18 @@ export default function Home() {
     }
   };
 
-  // Handle event click to navigate to event details page
   const handleEventClick = (eventId) => {
-    navigate(`/events/${eventId}`); // Navigate to event details page
+    navigate(`/events/${eventId}`);
   };
 
   if (loading) {
-    return <div className="text-center text-white">Loading...</div>; // Show loading state while fetching data
+    return <div className="text-center text-white">Loading...</div>;
   }
 
   if (error) {
-    return <div className="text-center text-white">Error fetching events: {error}</div>; // Show error message if an error occurred
+    return <div className="text-center text-white">Error fetching events: {error}</div>;
   }
 
-  // Only show the first 4 events
   const displayedEvents = events.slice(0, 4);
 
   return (
@@ -72,7 +67,6 @@ export default function Home() {
           <p className="text-xl mb-2">Find and attend events that match your passions</p>
         </section>
         <div className="justify-center flex">
-          {/* Explore Now button, conditional redirect */}
           <button
             onClick={handleExploreClick}
             className="text-white text-2xl p-4 bg-[#7a56d6] m-8 hover:scale-105 transition rounded-lg"
@@ -86,9 +80,9 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {displayedEvents.map((event) => (
               <div
-                key={event._id} // Assuming _id is the unique identifier from the backend
+                key={event._id}
                 className="text-white py-2 px-6 rounded-lg border-2 hover:scale-105 transition border-transparent hover:text-[#7a56d6] hover:border-[#7a56d6] duration-300 cursor-pointer"
-                onClick={() => handleEventClick(event._id)} // Add onClick event to navigate to event details
+                onClick={() => handleEventClick(event._id)}
               >
                 <img
                   src={event.image || "/placeholder.png"}
@@ -97,12 +91,12 @@ export default function Home() {
                 />
                 <h4 className="text-xl font-semibold mb-2">{event.title}</h4>
                 <p className="flex items-center mb-2">
-                  <FontAwesomeIcon icon={faCalendarDay} className="mr-2" /> {/* Calendar icon */}
-                  {event.date} {/* Display event date */}
+                  <FontAwesomeIcon icon={faCalendarDay} className="mr-2" />
+                  {event.date}
                 </p>
                 <p className="flex items-center">
-                  <FontAwesomeIcon icon={faMapMarkerAlt} className="mr-2" /> {/* Location icon */}
-                  {event.location} {/* Display event location */}
+                  <FontAwesomeIcon icon={faMapMarkerAlt} className="mr-2" />
+                  {event.location}
                 </p>
               </div>
             ))}

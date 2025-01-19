@@ -7,7 +7,7 @@ export default function SignupPage() {
     Email: '',
     Password: '',
     confirmPassword: '',
-    role:'user',
+    role: 'user',
   });
 
   const [message, setMessage] = useState('');
@@ -24,20 +24,17 @@ export default function SignupPage() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Check if passwords match
     if (formData.Password !== formData.confirmPassword) {
       setMessage('Passwords do not match.');
       return;
     }
 
-    // Basic email format validation (updated regex)
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailPattern.test(formData.Email)) {
       setMessage('Please enter a valid email address.');
       return;
     }
 
-    // Basic password length validation
     if (formData.Password.length < 8) {
       setMessage('Password must be at least 8 characters long.');
       return;
@@ -46,7 +43,6 @@ export default function SignupPage() {
     setIsLoading(true);
     setMessage('');
 
-    // Updated to use the live API URL
     fetch('https://eventmanagement-5c1x.onrender.com/register', {
       method: 'POST',
       headers: {
@@ -67,7 +63,7 @@ export default function SignupPage() {
       .then(() => {
         setMessage('Registration successful! Please log in.');
         setTimeout(() => {
-          navigate('/login'); // Redirect to login after successful registration
+          navigate('/login');
         }, 2000);
       })
       .catch(() => {

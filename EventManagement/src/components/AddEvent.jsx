@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // Use useNavigate instead of useHistory
+import { useNavigate } from "react-router-dom";
 
 export default function AddEvent() {
   const [title, setTitle] = useState("");
@@ -7,28 +7,25 @@ export default function AddEvent() {
   const [location, setLocation] = useState("");
   const [image, setImage] = useState("");
   const [error, setError] = useState(null);
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate();
 
-  // Get role from localStorage when the component mounts (although we won't use it in the request)
   useEffect(() => {
     const userData = localStorage.getItem("user");
     if (!userData) {
-      navigate("/login"); // Redirect to login if no user data exists
+      navigate("/login");
     }
   }, [navigate]);
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Simple validation
     if (!title.trim() || !date || !location.trim() || !image.trim()) {
       setError("All fields are required");
       return;
     }
 
-    const userData = JSON.parse(localStorage.getItem("user")); // Parse user data from localStorage
-    const role = userData?.role; // Assuming role exists in userData
+    const userData = JSON.parse(localStorage.getItem("user"));
+    const role = userData?.role;
 
     if (!role) {
       setError("User role is missing");
@@ -41,13 +38,13 @@ export default function AddEvent() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ title, date, location, image, role }), // Include role from userData
+        body: JSON.stringify({ title, date, location, image, role }),
       });
 
       const result = await response.json();
 
       if (response.ok) {
-        navigate("/explore"); // Redirect to Explore page after successful event creation
+        navigate("/explore");
       } else {
         setError(result.message || "An error occurred while creating the event");
       }
@@ -56,10 +53,9 @@ export default function AddEvent() {
     }
   };
 
-  // Handle input changes and clear error when user starts editing
   const handleChange = (setter) => (e) => {
     setter(e.target.value);
-    if (error) setError(null); // Clear error when user starts typing
+    if (error) setError(null);
   };
 
   return (

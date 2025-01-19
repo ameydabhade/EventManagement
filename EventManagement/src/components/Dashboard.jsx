@@ -3,25 +3,20 @@ import { useNavigate } from 'react-router-dom';
 
 function Dashboard() {
   const [userName, setUserName] = useState('');
-  const navigate = useNavigate(); // Hook for programmatic navigation
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Retrieve user data from localStorage
     const userData = localStorage.getItem('user');
     if (userData) {
-      // Parse the stored user data
       const user = JSON.parse(userData);
-      setUserName(user.Name);  // Set the user's name in state
+      setUserName(user.Name);
     } else {
-      // If no user is found, redirect to login page
       navigate('/login');
     }
   }, [navigate]);
 
   const handleLogout = () => {
-    // Clear user data from localStorage
     localStorage.removeItem('user');
-    // Redirect to login page
     navigate('/login');
   };
 

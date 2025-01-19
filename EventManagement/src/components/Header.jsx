@@ -3,31 +3,29 @@ import { Link, useNavigate } from "react-router-dom";
 
 const Header = () => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [userName, setUserName] = useState(""); // State to store the user's name
-  const [userRole, setUserRole] = useState(""); // State to store the user's role
-  const navigate = useNavigate(); // For redirecting after logout
+  const [userName, setUserName] = useState("");
+  const [userRole, setUserRole] = useState("");
+  const navigate = useNavigate();
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  // Check if the user is logged in when the component mounts
   useEffect(() => {
     const userData = localStorage.getItem('user');
     if (userData) {
       const user = JSON.parse(userData);
-      setUserName(user.Name); // Set user's name from localStorage
-      setUserRole(user.role); // Set user's role from localStorage
+      setUserName(user.Name);
+      setUserRole(user.role);
     }
-  }, []); // Empty dependency array to run only on mount
+  }, []);
 
-  // Logout function to remove user data from localStorage
   const handleLogout = () => {
     localStorage.removeItem('user');
     localStorage.removeItem('token');
-    setUserName(""); // Clear the user's name from the state
-    setUserRole(""); // Clear the user's role from the state
-    navigate("/login"); // Redirect to signin page
+    setUserName("");
+    setUserRole("");
+    navigate("/login");
   };
 
   return (
@@ -41,7 +39,6 @@ const Header = () => {
           />
         </a>
 
-        {/* Desktop Menu */}
         <nav className="hidden md:flex space-x-4">
           {userName ? (
             <>
@@ -82,7 +79,6 @@ const Header = () => {
           )}
         </nav>
 
-        {/* Mobile Menu Button */}
         <button
           onClick={toggleMobileMenu}
           className="md:hidden flex items-center"
@@ -96,7 +92,6 @@ const Header = () => {
         </button>
       </div>
 
-      {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
         <div
           className="w-full h-full absolute bg-black bg-opacity-80 top-0 left-0 z-10 md:hidden"

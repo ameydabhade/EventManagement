@@ -10,7 +10,7 @@ export default function SigninPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login state
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -38,15 +38,13 @@ export default function SigninPage() {
 
       if (response.ok) {
         if (data.message === 'Authentication successful') {
-          // Save user data and token to localStorage
-          localStorage.setItem('user', JSON.stringify(data.user)); // Save user info
-          localStorage.setItem('token', data.token); // Save authentication token
+          localStorage.setItem('user', JSON.stringify(data.user));
+          localStorage.setItem('token', data.token);
 
           setSuccessMessage('Login Successful!');
-          setIsLoggedIn(true); // Set login state to true
+          setIsLoggedIn(true);
 
-          // Redirect to home page and reload using <a> tag
-          window.location.href = "/"; // This will navigate and reload the page
+          window.location.href = "/";
         } else {
           setError(data.message || 'Invalid credentials');
         }
@@ -64,14 +62,12 @@ export default function SigninPage() {
     e.preventDefault();
     setFormData({ Email: 'guest@example.com', Password: 'guestpassword' });
     setSuccessMessage('Logged in as guest!');
-    setIsLoggedIn(true); // Set login state to true immediately after guest login
+    setIsLoggedIn(true);
 
-    // Save guest data to localStorage
     localStorage.setItem('user', JSON.stringify({ Name: 'Guest', Email: 'guest@example.com', role: 'guest' }));
-    localStorage.setItem('token', 'guest-token'); // Placeholder token for guest
+    localStorage.setItem('token', 'guest-token');
 
-    // Redirect to home page and reload using <a> tag
-    window.location.href = "/"; // This will navigate and reload the page
+    window.location.href = "/";
   };
 
   const handleLogout = () => {
@@ -79,8 +75,7 @@ export default function SigninPage() {
     localStorage.removeItem('token');
     setIsLoggedIn(false);
 
-    // Redirect via window.location
-    window.location.href = "/login"; // Redirect to login page
+    window.location.href = "/login";
   };
 
   return (
@@ -91,14 +86,12 @@ export default function SigninPage() {
           <p className="mt-2 text-sm text-gray-400">Welcome back! Please sign in to continue</p>
         </div>
 
-        {/* Display success message */}
         {successMessage && (
           <div className="text-center text-green-500 font-bold mt-4">
             {successMessage}
           </div>
         )}
 
-        {/* Display error message */}
         {error && (
           <div className="text-center text-red-500 font-bold mt-4">
             {error}
@@ -111,7 +104,7 @@ export default function SigninPage() {
               <label htmlFor="email" className="block text-sm font-medium text-white">Email address</label>
               <input
                 id="email"
-                name="Email" // Changed to match backend key
+                name="Email"
                 type="email"
                 required
                 className="w-full px-3 py-2 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#7a56d6] bg-black opacity-90 text-white"
@@ -124,7 +117,7 @@ export default function SigninPage() {
               <label htmlFor="password" className="block text-sm font-medium text-white">Password</label>
               <input
                 id="password"
-                name="Password" // Changed to match backend key
+                name="Password"
                 type="password"
                 required
                 className="w-full px-3 py-2 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#7a56d6] bg-black opacity-90 text-white"
