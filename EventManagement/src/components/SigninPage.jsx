@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 export default function SigninPage() {
   const [formData, setFormData] = useState({
@@ -11,7 +11,6 @@ export default function SigninPage() {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login state
-  const navigate = useNavigate(); // Use navigate for redirect
 
   const handleChange = (e) => {
     setFormData({
@@ -46,8 +45,8 @@ export default function SigninPage() {
           setSuccessMessage('Login Successful!');
           setIsLoggedIn(true); // Set login state to true
 
-          // Redirect to /explore
-          navigate('/explore'); 
+          // Redirect to home page and reload using <a> tag
+          window.location.href = "/"; // This will navigate and reload the page
         } else {
           setError(data.message || 'Invalid credentials');
         }
@@ -71,8 +70,8 @@ export default function SigninPage() {
     localStorage.setItem('user', JSON.stringify({ Name: 'Guest', Email: 'guest@example.com', role: 'guest' }));
     localStorage.setItem('token', 'guest-token'); // Placeholder token for guest
 
-    // Redirect to /explore
-    navigate('/explore');
+    // Redirect to home page and reload using <a> tag
+    window.location.href = "/"; // This will navigate and reload the page
   };
 
   const handleLogout = () => {
@@ -80,8 +79,8 @@ export default function SigninPage() {
     localStorage.removeItem('token');
     setIsLoggedIn(false);
 
-    // Redirect via useNavigate
-    navigate('/login');
+    // Redirect via window.location
+    window.location.href = "/login"; // Redirect to login page
   };
 
   return (
