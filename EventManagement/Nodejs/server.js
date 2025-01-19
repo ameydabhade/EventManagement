@@ -26,7 +26,7 @@ mongoose
     console.log('MongoDB connection is successful');
   })
   .catch((err) => {
-    console.error('MongoDB connection error:', err.message);
+    console.error('MongoDB connection error:', err); // Log full error object for better context
     process.exit(1); // Exit the process if the database connection fails
   });
 
@@ -36,6 +36,9 @@ Routes(app);
 // Global error handler (optional but recommended)
 app.use((err, req, res, next) => {
   console.error('Global error handler:', err.stack);
+  if (err.status === 404) {
+    return res.status(404).json({ message: 'Resource Not Found' });
+  }
   res.status(err.status || 500).json({ message: err.message || 'Internal Server Error' });
 });
 
