@@ -1,26 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 export default function SigninPage() {
   const [formData, setFormData] = useState({
-    email: '',
-    password: ''
+    Email: '',
+    Password: ''
   });
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login state
-  const navigate = useNavigate();
-
-  // Effect hook to redirect user to dashboard if logged in
-  useEffect(() => {
-    if (isLoggedIn) {
-      setTimeout(() => {
-        navigate('/explore');
-      }, 1000); // Redirect after 1 second
-    }
-  }, [isLoggedIn, navigate]);
+  const navigate = useNavigate(); // Use navigate for redirect
 
   const handleChange = (e) => {
     setFormData({
@@ -53,6 +44,10 @@ export default function SigninPage() {
 
         setSuccessMessage('Login Successful!');
         setIsLoggedIn(true); // Set login state to true
+
+        // Refresh the page and redirect to /explore
+        window.location.reload();  // Refresh page to update state
+        window.location.href = '/explore';  // Redirect to explore page
       } else {
         setError(data.message || 'Invalid credentials');
       }
@@ -65,21 +60,26 @@ export default function SigninPage() {
 
   const handleGuestLogin = (e) => {
     e.preventDefault();
-    setFormData({ email: 'guest@example.com', password: 'guestpassword' });
+    setFormData({ Email: 'guest@example.com', Password: 'guestpassword' });
     setSuccessMessage('Logged in as guest!');
     setIsLoggedIn(true); // Set login state to true immediately after guest login
 
     // Save guest data to localStorage
     localStorage.setItem('user', JSON.stringify({ Name: 'Guest', Email: 'guest@example.com', role: 'guest' }));
     localStorage.setItem('token', 'guest-token'); // Placeholder token for guest
+
+    // Refresh the page and redirect to /explore
+    window.location.reload();  // Refresh page to update state
+    window.location.href = '/explore';  // Redirect to explore page
   };
 
-  // Optional: Handle Logout
   const handleLogout = () => {
     localStorage.removeItem('user');
     localStorage.removeItem('token');
     setIsLoggedIn(false);
-    navigate('/signin'); // Redirect to sign-in page on logout
+
+    // Redirect via useNavigate
+    navigate('/signin');
   };
 
   return (
@@ -110,12 +110,12 @@ export default function SigninPage() {
               <label htmlFor="email" className="block text-sm font-medium text-white">Email address</label>
               <input
                 id="email"
-                name="email"
+                name="Email" // Changed to match backend key
                 type="email"
                 required
                 className="w-full px-3 py-2 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#7a56d6] bg-black opacity-90 text-white"
                 placeholder="Email address"
-                value={formData.email}
+                value={formData.Email}
                 onChange={handleChange}
               />
             </div>
@@ -123,12 +123,12 @@ export default function SigninPage() {
               <label htmlFor="password" className="block text-sm font-medium text-white">Password</label>
               <input
                 id="password"
-                name="password"
+                name="Password" // Changed to match backend key
                 type="password"
                 required
                 className="w-full px-3 py-2 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#7a56d6] bg-black opacity-90 text-white"
                 placeholder="Password"
-                value={formData.password}
+                value={formData.Password}
                 onChange={handleChange}
               />
             </div>

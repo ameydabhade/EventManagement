@@ -1,4 +1,3 @@
-// App.jsx
 import { createBrowserRouter, Outlet } from 'react-router-dom';
 import Header from './components/Header.jsx';
 import Home from './components/Home.jsx';
@@ -6,6 +5,7 @@ import SigninPage from './components/SigninPage.jsx';
 import SignupPage from './components/SignupPage.jsx';
 import Explore from './components/Explore.jsx';
 import Dashboard from './components/Dashboard.jsx';
+import EventPage from './components/EventPage.jsx'; // Import your EventPage component
 
 // Layout Component (with Header and Outlet)
 function Layout() {
@@ -14,7 +14,6 @@ function Layout() {
       <Header />
       <main>
         <Outlet />  {/* This will render the route-specific content */}
-      
       </main>
     </div>
   );
@@ -45,6 +44,10 @@ const router = createBrowserRouter([
       {
         path: 'dashboard',
         element: <Dashboard />
+      },
+      {
+        path: 'events/:id',  // Dynamic route for the event details page
+        element: <EventPage />  // Render the EventPage component
       }
     ]
   }

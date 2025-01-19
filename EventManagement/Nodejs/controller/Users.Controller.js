@@ -1,24 +1,24 @@
+import { body, validationResult } from 'express-validator';
 import UserModel from '../Model/Users.model.js';
 import bcrypt from 'bcryptjs';
-import { validationResult } from 'express-validator';
+import mongoose from 'mongoose';
 
-// Password validation helper function
+// Password validation function (at least 8 characters)
 const validatePassword = (password) => {
-    return password.length >= 8;  // Password should be at least 8 characters long
+    return password.length >= 8;
 };
 
 // Create User Function
-// Create User Function
 export async function createUser(req, res) {
-    const { Name, Email, Password, role } = req.body; // Accept role from request body
+    const { Name, Email, Password, role } = req.body;
 
-    // Validate input
+    // Validate input using express-validator
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ message: 'Invalid input', errors: errors.array() });
     }
 
-    // Validate password
+    // Validate password (at least 8 characters long)
     if (!validatePassword(Password)) {
         return res.status(400).json({ message: 'Password should be at least 8 characters long' });
     }
@@ -51,8 +51,8 @@ export async function createUser(req, res) {
             return res.status(400).json({ message: 'Something went wrong while saving user' });
         }
 
-        // Return the user data (without the password field)
-        const { Password: _, ...userWithoutPassword } = savedUser.toObject(); 
+        // Return the user data excluding the password
+        const { Password: _, ...userWithoutPassword } = savedUser.toObject();
         res.status(201).json(userWithoutPassword); // Return the user object without Password
 
     } catch (err) {
@@ -61,41 +61,38 @@ export async function createUser(req, res) {
     }
 }
 
-
-// Fetch Users (for listing or events, etc.)
+// Fetch Users Function
 export async function fetchUsers(req, res) {
     try {
         const users = await UserModel.find();
         if (users.length === 0) {
             return res.status(404).json({ message: 'No users found' });
         }
-
         res.status(200).json(users);
     } catch (err) {
         console.error('Error fetching users:', err);
-        res.status(500).json({ message: 'Internal server error' });
+        res.status(500).json({ message: 'Internal server error', error: err.message });
     }
 }
 
 // Login Function
-// Login Function
 export async function login(req, res) {
-    const { email, password } = req.body;
+    const { Email, Password } = req.body;
 
     // Ensure email and password are provided
-    if (!email || !password) {
+    if (!Email || !Password) {
         return res.status(400).json({ message: 'Email and password are required' });
     }
 
     try {
         // Find user by email
-        const user = await UserModel.findOne({ Email: email });
+        const user = await UserModel.findOne({ Email });
         if (!user) {
             return res.status(404).json({ message: 'No user found with this email' });
         }
 
         // Compare the provided password with the stored hashed password
-        const isMatch = await bcrypt.compare(password, user.Password);
+        const isMatch = await bcrypt.compare(Password, user.Password);
         if (!isMatch) {
             return res.status(400).json({ message: 'Invalid email or password' });
         }
@@ -112,4 +109,45 @@ export async function login(req, res) {
         console.error('Error authenticating user:', err);
         res.status(500).json({ message: 'Error authenticating user', error: err.message });
     }
+}
+
+// Middleware to validate Login fields
+export const validateLogin = [
+    body('Email').isEmail().withMessage('Invalid email format'),
+    body('Password').notEmpty().withMessage('Password is required')
+];
+
+// Route to handle login
+export function loginRoute(app) {
+    // POST route for login
+    app.post('/login', validateLogin, async (req, res) => {
+        // Validation errors
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ message: 'Validation failed', errors: errors.array() });
+        }
+
+        // Call the login function
+        login(req, res);
+    });
+}
+
+// Register Route
+export function registerRoute(app) {
+    app.post('/register', [
+        body('Email').isEmail().withMessage('Invalid email format'),
+        body('Password').isLength({ min: 8 }).withMessage('Password must be at least 8 characters'),
+        body('Name').notEmpty().withMessage('Name is required')
+    ], async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ message: 'Validation failed', errors: errors.array() });
+        }
+        createUser(req, res);
+    });
+}
+
+// Express route setup for fetching users
+export function fetchUsersRoute(app) {
+    app.get('/users', fetchUsers);
 }
