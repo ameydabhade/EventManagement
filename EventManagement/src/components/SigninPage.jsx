@@ -1,110 +1,118 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-export default function SignupPage() {
+export default function SigninPage() {
   const [formData, setFormData] = useState({
-    Name: '',
     Email: '',
-    Password: '',
-    confirmPassword: '',
-    role:'user',
+    Password: ''
   });
 
-  const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
+  const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login state
+  const navigate = useNavigate(); // Use navigate for redirect
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target.value
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Check if passwords match
-    if (formData.Password !== formData.confirmPassword) {
-      setMessage('Passwords do not match.');
-      return;
-    }
-
-    // Basic email format validation (updated regex)
-    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!emailPattern.test(formData.Email)) {
-      setMessage('Please enter a valid email address.');
-      return;
-    }
-
-    // Basic password length validation
-    if (formData.Password.length < 8) {
-      setMessage('Password must be at least 8 characters long.');
-      return;
-    }
-
     setIsLoading(true);
-    setMessage('');
+    setError('');
+    setSuccessMessage('');
 
-    // Updated to use the live API URL
-    fetch('https://eventmanagement-5c1x.onrender.com/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        Name: formData.Name,
-        Email: formData.Email,
-        Password: formData.Password,
-      }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Registration failed');
-        }
-        return response.json();
-      })
-      .then(() => {
-        setMessage('Registration successful! Please log in.');
-        setTimeout(() => {
-          navigate('/login'); // Redirect to login after successful registration
-        }, 2000);
-      })
-      .catch(() => {
-        setMessage('Registration failed. Please try again.');
-      })
-      .finally(() => {
-        setIsLoading(false);
+    try {
+      const response = await fetch('https://eventmanagement-5c1x.onrender.com/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
       });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        if (data.message === 'Authentication successful') {
+          // Save user data and token to localStorage
+          localStorage.setItem('user', JSON.stringify(data.user)); // Save user info
+          localStorage.setItem('token', data.token); // Save authentication token
+
+          setSuccessMessage('Login Successful!');
+          setIsLoggedIn(true); // Set login state to true
+
+          // Redirect to /explore
+          navigate('/explore'); 
+        } else {
+          setError(data.message || 'Invalid credentials');
+        }
+      } else {
+        setError(data.message || 'Failed to log in. Please check your credentials.');
+      }
+    } catch (err) {
+      setError('Error logging in. Please try again later.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGuestLogin = (e) => {
+    e.preventDefault();
+    setFormData({ Email: 'guest@example.com', Password: 'guestpassword' });
+    setSuccessMessage('Logged in as guest!');
+    setIsLoggedIn(true); // Set login state to true immediately after guest login
+
+    // Save guest data to localStorage
+    localStorage.setItem('user', JSON.stringify({ Name: 'Guest', Email: 'guest@example.com', role: 'guest' }));
+    localStorage.setItem('token', 'guest-token'); // Placeholder token for guest
+
+    // Redirect to /explore
+    navigate('/explore');
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    setIsLoggedIn(false);
+
+    // Redirect via useNavigate
+    navigate('/signin');
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-black">
       <div className="w-full max-w-md p-8 space-y-8 rounded-xl shadow-2xl">
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-white">Create your account</h2>
-          <p className="mt-2 text-sm text-gray-400">Join us and start your journey</p>
+          <h2 className="text-3xl font-bold text-white">Sign In</h2>
+          <p className="mt-2 text-sm text-gray-400">Welcome back! Please sign in to continue</p>
         </div>
+
+        {/* Display success message */}
+        {successMessage && (
+          <div className="text-center text-green-500 font-bold mt-4">
+            {successMessage}
+          </div>
+        )}
+
+        {/* Display error message */}
+        {error && (
+          <div className="text-center text-red-500 font-bold mt-4">
+            {error}
+          </div>
+        )}
+
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
             <div>
-              <label htmlFor="Name" className="block text-sm font-medium text-white">Name</label>
+              <label htmlFor="email" className="block text-sm font-medium text-white">Email address</label>
               <input
-                id="Name"
-                name="Name"
-                type="text"
-                required
-                className="w-full px-3 py-2 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#7a56d6] bg-black opacity-90 text-white"
-                placeholder="Name"
-                value={formData.Name}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label htmlFor="Email" className="block text-sm font-medium text-white">Email address</label>
-              <input
-                id="Email"
-                name="Email"
+                id="email"
+                name="Email" // Changed to match backend key
                 type="email"
                 required
                 className="w-full px-3 py-2 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#7a56d6] bg-black opacity-90 text-white"
@@ -114,10 +122,10 @@ export default function SignupPage() {
               />
             </div>
             <div>
-              <label htmlFor="Password" className="block text-sm font-medium text-white">Password</label>
+              <label htmlFor="password" className="block text-sm font-medium text-white">Password</label>
               <input
-                id="Password"
-                name="Password"
+                id="password"
+                name="Password" // Changed to match backend key
                 type="password"
                 required
                 className="w-full px-3 py-2 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#7a56d6] bg-black opacity-90 text-white"
@@ -126,49 +134,29 @@ export default function SignupPage() {
                 onChange={handleChange}
               />
             </div>
-            <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-white">Confirm Password</label>
-              <input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                required
-                className="w-full px-3 py-2 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#7a56d6] bg-black opacity-90 text-white"
-                placeholder="Confirm Password"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-              />
-            </div>
           </div>
-          <div>
+          <div className="gap-2 flex flex-col">
             <button
               type="submit"
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#7a56d6] hover:bg-[#7a56d6] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#fa4d56] transition duration-150 ease-in-out"
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:text-[#7a56d6] hover:scale-105 hover:bg-white bg-[#7a56d6] hover:bg-[#7a56d6] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#fa4d56] transition duration-150 ease-in-out"
               disabled={isLoading}
             >
-              {isLoading ? 'Signing up...' : 'Sign up'}
+              {isLoading ? 'Logging in...' : 'Login'}
+            </button>
+            <button
+              type="button"
+              onClick={handleGuestLogin}
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-[#7a56d6] bg-white hover:scale-105 hover:bg-[#7a56d6] hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#fa4d56] transition duration-150 ease-in-out"
+            >
+              Login As Guest
             </button>
           </div>
         </form>
-
-        {message && (
-          <div
-            className={`mt-4 text-center text-sm font-medium ${
-              message.includes('successful') ? 'text-green-500' : 'text-red-500'
-            }`}
-          >
-            {message}
-          </div>
-        )}
-
         <div className="text-center">
           <p className="text-sm text-gray-400">
-            Already have an account?{' '}
-            <Link
-              to="/login"
-              className="font-medium text-[#7a56d6] hover:text-[#fa4d56] transition duration-150 ease-in-out"
-            >
-              Login
+            Don't have an account?{' '}
+            <Link to="../register" className="font-medium text-[#7a56d6] hover:text-[#fa4d56] transition duration-150 ease-in-out">
+              Sign up
             </Link>
           </p>
         </div>
