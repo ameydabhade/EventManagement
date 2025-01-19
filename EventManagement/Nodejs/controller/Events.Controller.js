@@ -6,6 +6,11 @@ import mongoose from 'mongoose';
 export async function createEvent(req, res) {
     const { title, date, location, image } = req.body;
 
+    // Check if the user is an admin
+    if (req.user.role !== 'admin') {
+        return res.status(403).json({ message: 'Forbidden: You do not have permission to create events.' });
+    }
+
     // Validate input
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -77,6 +82,11 @@ export async function updateEvent(req, res) {
     const { id } = req.params;
     const { title, date, location, image } = req.body;
 
+    // Check if the user is an admin
+    if (req.user.role !== 'admin') {
+        return res.status(403).json({ message: 'Forbidden: You do not have permission to update events.' });
+    }
+
     // Validate the id to ensure it's a valid ObjectId
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).json({ message: 'Invalid Event ID' });
@@ -104,6 +114,11 @@ export async function updateEvent(req, res) {
 // Delete Event
 export async function deleteEvent(req, res) {
     const { id } = req.params;
+
+    // Check if the user is an admin
+    if (req.user.role !== 'admin') {
+        return res.status(403).json({ message: 'Forbidden: You do not have permission to delete events.' });
+    }
 
     // Validate the id to ensure it's a valid ObjectId
     if (!mongoose.Types.ObjectId.isValid(id)) {
