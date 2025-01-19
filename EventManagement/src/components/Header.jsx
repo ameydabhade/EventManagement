@@ -19,29 +19,30 @@ const Header = () => {
       setUserName(user.Name); // Set user's name from localStorage
       setUserRole(user.role); // Set user's role from localStorage
     }
-  }, []);
+  }, []); // Empty dependency array to run only on mount
 
   // Logout function to remove user data from localStorage
   const handleLogout = () => {
     localStorage.removeItem('user');
+    localStorage.removeItem('token');
     setUserName(""); // Clear the user's name from the state
     setUserRole(""); // Clear the user's role from the state
-    navigate("/login"); // Redirect to login page
+    navigate("/login"); // Redirect to signin page
   };
 
   return (
-    <header className="w-full bg-transparent border-b border-gray-200 bg-black">
+    <header className="w-full bg-black border-b border-gray-200">
       <div className="max-w-screen-xl mx-auto px-4 py-4 flex items-center justify-between">
         <a href="/" aria-label="home" className="w-nav-brand">
           <img
             src="/Persist.svg"
             alt="Logo"
-            className="st-current h-10"
+            className="h-10"
           />
         </a>
 
         {/* Desktop Menu */}
-        <nav className="hidden md:flex space-x-2">
+        <nav className="hidden md:flex space-x-4">
           {userName ? (
             <>
               <span className="text-white py-2 px-6 rounded-lg border-2 border-transparent hover:text-[#7a56d6] hover:border-[#7a56d6] transition-colors duration-300">
@@ -98,30 +99,30 @@ const Header = () => {
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
         <div
-          className="w-full h-full absolute bg-black bg-opacity-50 top-0 left-0 md:hidden"
+          className="w-full h-full absolute bg-black bg-opacity-80 top-0 left-0 z-10 md:hidden"
           onClick={toggleMobileMenu}
         >
           <div
-            className="bg-white p-6 w-4/5 h-full absolute top-0 right-0"
+            className="bg-black text-white p-6 w-4/5 h-full absolute top-0 right-0"
             onClick={(e) => e.stopPropagation()}
           >
             <nav className="space-y-4">
               {userName ? (
                 <>
-                  <span className="block text-black py-2 px-6 rounded-lg text-center">
+                  <span className="block text-white py-2 px-6 rounded-lg text-center">
                     Welcome, {userName}!
                   </span>
                   {userRole === "admin" && (
                     <Link
-                      to="/add-event"
-                      className="block bg-blue-600 text-white py-2 px-6 rounded-lg text-center hover:bg-blue-700"
+                      to="/addevent"
+                      className="block text-white py-2 px-6 rounded-lg text-center hover:text-[#7a56d6] transition-colors duration-300"
                     >
                       Add Event
                     </Link>
                   )}
                   <button
                     onClick={handleLogout}
-                    className="block bg-red-500 text-white py-2 px-6 rounded-lg text-center hover:bg-red-600"
+                    className="block text-white py-2 px-6 rounded-lg text-center hover:text-[#7a56d6] transition-colors duration-300"
                   >
                     Logout
                   </button>
@@ -130,13 +131,13 @@ const Header = () => {
                 <>
                   <Link
                     to="/login"
-                    className="block bg-blue-600 text-white py-2 px-6 rounded-lg text-center hover:bg-blue-700"
+                    className="block text-white py-2 px-6 rounded-lg text-center hover:text-[#7a56d6] transition-colors duration-300"
                   >
                     Login
                   </Link>
                   <Link
                     to="/register"
-                    className="block bg-gray-200 text-gray-800 py-2 px-6 rounded-lg text-center hover:bg-gray-300"
+                    className="block bg-gray-200 text-gray-800 py-2 px-6 rounded-lg text-center hover:bg-gray-300 transition-colors duration-300"
                   >
                     Sign Up
                   </Link>

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Import FontAwesomeIcon
+import { faCalendarDay, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons'; // Import specific icons
 
 export default function Home() {
   const navigate = useNavigate();
@@ -94,8 +96,14 @@ export default function Home() {
                   className="w-full h-48 object-cover rounded-md mb-4"
                 />
                 <h4 className="text-xl font-semibold mb-2">{event.title}</h4>
-                <p className="mb-2">📅 {event.date}</p>
-                <p>📍 {event.location}</p>
+                <p className="flex items-center mb-2">
+                  <FontAwesomeIcon icon={faCalendarDay} className="mr-2" /> {/* Calendar icon */}
+                  {event.date} {/* Display event date */}
+                </p>
+                <p className="flex items-center">
+                  <FontAwesomeIcon icon={faMapMarkerAlt} className="mr-2" /> {/* Location icon */}
+                  {event.location} {/* Display event location */}
+                </p>
               </div>
             ))}
           </div>

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom"; // Import Link from react-router-dom
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Import FontAwesomeIcon component
+import { faCalendarDay, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons'; // Import specific icons
 
 function Explore() {
   const [events, setEvents] = useState([]);
@@ -44,6 +46,7 @@ function Explore() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-6 m-6">
+      
       {events.map((event) => (
         <div
           key={event._id} // Use the correct key (MongoDB ID usually)
@@ -57,11 +60,11 @@ function Explore() {
             />
             <h4 className="text-xl font-semibold mb-2">{event.title}</h4>
             <p className="flex items-center mb-2">
-              <i className="fas fa-calendar-day mr-2"></i> {/* Font Awesome Calendar Icon */}
+              <FontAwesomeIcon icon={faCalendarDay} className="mr-2" /> {/* Font Awesome Calendar Icon */}
               {event.date} {/* Directly use the date */}
             </p>
             <p className="flex items-center">
-              <i className="fas fa-map-marker-alt mr-2"></i> {/* Font Awesome Location Icon */}
+              <FontAwesomeIcon icon={faMapMarkerAlt} className="mr-2" /> {/* Font Awesome Location Icon */}
               {event.location}
             </p>
           </Link>

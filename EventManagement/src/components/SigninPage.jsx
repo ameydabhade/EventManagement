@@ -81,7 +81,7 @@ export default function SigninPage() {
     setIsLoggedIn(false);
 
     // Redirect via useNavigate
-    navigate('/signin');
+    navigate('/login');
   };
 
   return (
