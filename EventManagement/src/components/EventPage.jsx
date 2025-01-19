@@ -40,6 +40,10 @@ function EventPage() {
       try {
         const response = await fetch(`http://localhost:5800/events/${id}`, {
           method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ role: userRole }), // Pass the role in the body
         });
 
         if (response.ok) {

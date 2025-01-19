@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; // Use useNavigate instead of useHistory
 
 export default function AddEvent() {
@@ -8,6 +8,16 @@ export default function AddEvent() {
   const [image, setImage] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate(); // Initialize navigate
+  const [role, setRole] = useState(""); // State to store user's role
+
+  // Get role from localStorage when the component mounts
+  useEffect(() => {
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      const user = JSON.parse(userData);
+      setRole(user.role); // Set user's role from localStorage
+    }
+  }, []);
 
   // Handle form submission
   const handleSubmit = async (e) => {
@@ -25,7 +35,7 @@ export default function AddEvent() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ title, date, location, image }),
+        body: JSON.stringify({ title, date, location, image, role }), // Include role in the request body
       });
 
       const result = await response.json();

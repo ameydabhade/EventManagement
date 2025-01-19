@@ -4,10 +4,10 @@ import mongoose from 'mongoose';
 
 // Create Event Function
 export async function createEvent(req, res) {
-    const { title, date, location, image } = req.body;
+    const { title, date, location, image, role } = req.body; // Extract role from the request body
 
     // Check if the user is an admin
-    if (req.user.role !== 'admin') {
+    if (role !== 'admin') { // Compare with 'admin' role from the request
         return res.status(403).json({ message: 'Forbidden: You do not have permission to create events.' });
     }
 
@@ -80,10 +80,10 @@ export async function fetchEventById(req, res) {
 // Update Event
 export async function updateEvent(req, res) {
     const { id } = req.params;
-    const { title, date, location, image } = req.body;
+    const { title, date, location, image, role } = req.body; // Extract role from the request body
 
     // Check if the user is an admin
-    if (req.user.role !== 'admin') {
+    if (role !== 'admin') { // Compare with 'admin' role from the request
         return res.status(403).json({ message: 'Forbidden: You do not have permission to update events.' });
     }
 
@@ -114,9 +114,10 @@ export async function updateEvent(req, res) {
 // Delete Event
 export async function deleteEvent(req, res) {
     const { id } = req.params;
+    const { role } = req.body; // Extract role from the request body
 
     // Check if the user is an admin
-    if (req.user.role !== 'admin') {
+    if (role !== 'admin') { // Compare with 'admin' role from the request
         return res.status(403).json({ message: 'Forbidden: You do not have permission to delete events.' });
     }
 
