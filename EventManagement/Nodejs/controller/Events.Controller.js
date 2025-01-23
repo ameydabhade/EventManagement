@@ -3,7 +3,7 @@ import { validationResult } from 'express-validator';
 import mongoose from 'mongoose';
 
 export async function createEvent(req, res) {
-    const { title, date, location, image, role } = req.body;
+    const { title, date, location, image, category, role } = req.body; // Added category
 
     if (role !== 'admin') {
         return res.status(403).json({ message: 'Forbidden: You do not have permission to create events.' });
@@ -20,6 +20,7 @@ export async function createEvent(req, res) {
             date,
             location,
             image,
+            category, // Added category to the new event
         });
 
         const savedEvent = await newEvent.save();
@@ -71,7 +72,7 @@ export async function fetchEventById(req, res) {
 
 export async function updateEvent(req, res) {
     const { id } = req.params;
-    const { title, date, location, image, role } = req.body;
+    const { title, date, location, image, category, role } = req.body; // Added category
 
     if (role !== 'admin') {
         return res.status(403).json({ message: 'Forbidden: You do not have permission to update events.' });
@@ -84,7 +85,7 @@ export async function updateEvent(req, res) {
     try {
         const updatedEvent = await EventModel.findByIdAndUpdate(
             id,
-            { title, date, location, image },
+            { title, date, location, image, category }, // Included category in the update
             { new: true, runValidators: true }
         );
 
