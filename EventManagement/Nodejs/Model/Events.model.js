@@ -17,12 +17,12 @@ const eventSchema = new mongoose.Schema({
         type: String,
         required: false, 
     },
-    category: {
+    category: { // The optional category field
         type: String,
-        required: true, 
+        required: false, 
     },
 }, {
-    timestamps: true,
+    timestamps: true, // Automatically adds createdAt and updatedAt fields
 });
 
 const EventModel = mongoose.model('Event', eventSchema);

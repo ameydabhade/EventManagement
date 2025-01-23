@@ -6,6 +6,7 @@ export default function AddEvent() {
   const [date, setDate] = useState("");
   const [location, setLocation] = useState("");
   const [image, setImage] = useState("");
+  const [category, setCategory] = useState(""); // Added category state
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
@@ -19,7 +20,7 @@ export default function AddEvent() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!title.trim() || !date || !location.trim() || !image.trim()) {
+    if (!title.trim() || !date || !location.trim() || !image.trim() || !category.trim()) {
       setError("All fields are required");
       return;
     }
@@ -38,7 +39,7 @@ export default function AddEvent() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ title, date, location, image, role }),
+        body: JSON.stringify({ title, date, location, image, category, role }), // Added category to request body
       });
 
       const result = await response.json();
@@ -112,6 +113,18 @@ export default function AddEvent() {
                 onChange={handleChange(setImage)}
                 className="w-full px-3 py-2 bg-black opacity-90 border border-gray-700 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-[#7a56d6] focus:ring-offset-2"
                 placeholder="Event Image URL"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="category" className="block text-sm font-medium text-white">Event Category</label>
+              <input
+                type="text"
+                id="category"
+                value={category}
+                onChange={handleChange(setCategory)} // Handle category change
+                className="w-full px-3 py-2 bg-black opacity-90 border border-gray-700 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-[#7a56d6] focus:ring-offset-2"
+                placeholder="Event Category"
               />
             </div>
           </div>
