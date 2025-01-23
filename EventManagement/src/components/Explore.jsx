@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendarDay, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCalendarDay, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 
 function Explore() {
   const [events, setEvents] = useState([]);
@@ -10,6 +10,8 @@ function Explore() {
   const [searchTerm, setSearchTerm] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [category, setCategory] = useState(""); // New state for category
+  const [categories, setCategories] = useState([]); // For storing unique categories
 
   useEffect(() => {
     async function fetchEvents() {
@@ -22,6 +24,10 @@ function Explore() {
 
         const data = await response.json();
         setEvents(data);
+
+        // Extract unique categories from events
+        const uniqueCategories = [...new Set(data.map((event) => event.category))];
+        setCategories(uniqueCategories);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -32,8 +38,9 @@ function Explore() {
     fetchEvents();
   }, []);
 
-  const filteredEvents = events.filter(event => {
+  const filteredEvents = events.filter((event) => {
     const matchesSearchTerm = event.title.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = category ? event.category === category : true;
     const matchesDateRange = () => {
       if (!startDate && !endDate) return true;
 
@@ -48,7 +55,7 @@ function Explore() {
       return true;
     };
 
-    return matchesSearchTerm && matchesDateRange();
+    return matchesSearchTerm && matchesCategory && matchesDateRange();
   });
 
   if (loading) {
@@ -76,20 +83,37 @@ function Explore() {
           className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300 bg-black text-white mb-4"
         />
 
-        {/* Date filters */}
-        <div className="flex gap-4">
+        {/* Date and Category filters inline */}
+        <div className="flex gap-4 items-center mb-4">
+          {/* Date labels and inputs */}
+          <label className="text-white">From:</label>
           <input
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
             className="px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300 bg-black text-white"
           />
+          <label className="text-white">To:</label>
           <input
             type="date"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
             className="px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300 bg-black text-white"
           />
+
+          {/* Category filter */}
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300 bg-black text-white"
+          >
+            <option value="">All Categories</option>
+            {categories.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
@@ -115,6 +139,7 @@ function Explore() {
                 <FontAwesomeIcon icon={faMapMarkerAlt} className="mr-2" />
                 {event.location}
               </p>
+            
             </Link>
           </div>
         ))}
